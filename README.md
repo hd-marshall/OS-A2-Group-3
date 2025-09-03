@@ -48,6 +48,7 @@ git clone https://github.com/hd-marshall/OS-A2-Group-3
 
 - Or upload the zip file.
 
+scl enable devtoolset-7 bash
 make all
 
 - Or one at a time.
