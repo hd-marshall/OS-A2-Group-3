@@ -1,4 +1,5 @@
 // mscopier.cpp — Task 2, Subtask 1 ONLY (C++17 + POSIX pthreads).
+
 // Usage: ./mscopier n source_file destination_file
 // Spawns n reader threads and n writer threads.
 // Shared queue capacity = 20 lines. Readers/writers "take turns" (no mutex/condvar yet).
