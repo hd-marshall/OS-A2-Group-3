@@ -40,7 +40,7 @@ saturn.csit.rmit.edu.au
 
 # To connect and run the program:
 
-ssh s[your_student_number]@titan.csit.rmit.edu.au
+ssh s[your_student_number]@[server-prefix].csit.rmit.edu.au
 
 - Enter RMIT account password.
 
