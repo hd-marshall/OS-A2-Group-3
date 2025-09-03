@@ -12,12 +12,12 @@ Subtask 3: Condition variables (no busy waiting)
 # Locks and Sync Implementation -
 
 File: mmcopier.cpp
-Output mutex: FILL
+Output mutex: DONE
 
 File: mscopier.cpp
-Queue mutex: FILL
-Queue condition variables: FILL
-File I/O mutex: FILL
+Queue mutex: DONE
+Queue condition variables: DONE
+File I/O mutex: DONE
 
 # Compilation and Usage -
 
