@@ -38,11 +38,18 @@ titan.csit.rmit.edu.au
 jupiter.csit.rmit.edu.au
 saturn.csit.rmit.edu.au
 
-To connect and run the program:
+# To connect and run the program:
 
 ssh s[your_student_number]@titan.csit.rmit.edu.au
+
+- Enter RMIT account password.
+
 git clone https://github.com/hd-marshall/OS-A2-Group-3
--Or upload the zip file.
+
+- Or upload the zip file.
+
 make all
--Or one at a time.
--Run Task 1 or Task 2 commands. Above in the Compilation and Usage section.
+
+- Or one at a time.
+
+Run Task 1 or Task 2 commands. Above in the Compilation and Usage section.
