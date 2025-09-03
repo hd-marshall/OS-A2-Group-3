@@ -36,9 +36,9 @@ static int qtail = 0;  // next index to push
 static int qcount = 0; // number of queued lines
 
 // TODO(Subtask 2): Declare mutexes *right here*:
-//   pthread_mutex_t q_mtx;   // protects qhead/qtail/qcount and qbuf[]
-//   pthread_mutex_t in_mtx;  // serializes getline(fin)
-//   pthread_mutex_t out_mtx; // serializes fwrite(fout) for one whole line
+pthread_mutex_t q_mtx;   // protects qhead/qtail/qcount and qbuf[]
+pthread_mutex_t in_mtx;  // serializes getline(fin)
+pthread_mutex_t out_mtx; // serializes fwrite(fout) for one whole line
 // TODO(Subtask 3): Declare condition variables bound to q_mtx here:
 //   pthread_cond_t  not_full;   // readers wait when queue is full
 //   pthread_cond_t  not_empty;  // writers wait when queue is empty
@@ -64,7 +64,7 @@ struct ThreadArg
 static inline void polite_yield()
 {
     // Courtesy yield (Subtask 1 only). Will be replaced by condvars in Subtask 3.
-    sched_yield(); // advisory under SCHED_OTHER; fine here for demo purposes. :contentReference[oaicite:1]{index=1}
+    sched_yield(); // advisory under SCHED_OTHER; fine here for demo purposes.
 }
 
 static inline bool queue_full() { return qcount == QCAP; }
@@ -130,11 +130,11 @@ static void *reader_main(void *vp)
 
         // ---- READ ONE LINE ----
         // TODO(Subtask 2): Wrap getline with in_mtx:
-        //   pthread_mutex_lock(&in_mtx);
+        pthread_mutex_lock(&in_mtx);
         errno = 0;
-        // POSIX getline: includes '\n' if present; buffer must be freed by caller. :contentReference[oaicite:2]{index=2}
+        // POSIX getline: includes '\n' if present; buffer must be freed by caller.
         ssize_t nread = getline(&line, &cap, fin);
-        //   pthread_mutex_unlock(&in_mtx);
+        pthread_mutex_unlock(&in_mtx);
 
         if (nread < 0)
         {
@@ -159,8 +159,16 @@ static void *reader_main(void *vp)
 
         // ---- ENQUEUE (bounded: capacity 20) ----
         // Subtask 1: spin if full
-        while (queue_full())
+        for (;;)
         {
+            pthread_mutex_lock(&q_mtx);
+            if (!queue_full())
+            {
+                enqueue_line(line, static_cast<size_t>(nread));
+                pthread_mutex_unlock(&q_mtx);
+                break;
+            }
+            pthread_mutex_unlock(&q_mtx);
             if (global_err)
             {
                 std::free(line);
@@ -176,7 +184,6 @@ static void *reader_main(void *vp)
         //   enqueue_line(line, static_cast<size_t>(nread)); // q_mtx still held
         //   pthread_cond_signal(&not_empty);                // wake a writer
         //   pthread_mutex_unlock(&q_mtx);
-        enqueue_line(line, static_cast<size_t>(nread));
 
         // Hand turn to next reader (Subtask 1 only; remove in Subtask 3)
         reader_turn = (my + 1) % a->n;
@@ -217,6 +224,17 @@ static void *writer_main(void *vp)
 
         // ---- DEQUEUE ONE LINE ----
         // TODO(Subtask 2): Replace empty check + dequeue with lock q_mtx → check → dequeue → unlock.
+        char *buf = nullptr;
+        size_t len = 0;
+        pthread_mutex_lock(&q_mtx);
+        bool got_line = dequeue_line(&buf, &len);
+        pthread_mutex_unlock(&q_mtx);
+
+        if (!got_line)
+        {
+            writer_turn = (my + 1) % a->n;
+            continue;
+        }
         // TODO(Subtask 3): With condvars, do:
         //   pthread_mutex_lock(&q_mtx);
         //   while (queue_empty() && !done_reading) pthread_cond_wait(&not_empty, &q_mtx);
@@ -224,17 +242,11 @@ static void *writer_main(void *vp)
         //   dequeue_line(&buf, &len);  // while holding q_mtx
         //   pthread_cond_signal(&not_full);
         //   pthread_mutex_unlock(&q_mtx);
-        char *buf = nullptr;
-        size_t len = 0;
-        if (!dequeue_line(&buf, &len))
-        {
-            writer_turn = (my + 1) % a->n;
-            continue;
-        }
 
         // ---- WRITE EXACT BYTES (keep a line together) ----
         // TODO(Subtask 2): Wrap this whole fwrite section with out_mtx lock/unlock
         //   so one writer's line isn't interleaved with another.
+        pthread_mutex_lock(&out_mtx);
         size_t off = 0;
         while (off < len)
         {
@@ -250,6 +262,7 @@ static void *writer_main(void *vp)
             }
             off += wrote;
         }
+        pthread_mutex_unlock(&out_mtx);
         std::free(buf);
 
         // Hand turn to next writer (Subtask 1 only; remove in Subtask 3)
@@ -297,9 +310,27 @@ int main(int argc, char **argv)
 
     // ---- INIT THREADING PRIMITIVES ----
     // TODO(Subtask 2): Initialize mutexes here (check return codes):
-    //   pthread_mutex_init(&q_mtx,  nullptr);
-    //   pthread_mutex_init(&in_mtx, nullptr);
-    //   pthread_mutex_init(&out_mtx,nullptr);
+    if (pthread_mutex_init(&q_mtx, nullptr) != 0)
+    {
+        std::fprintf(stderr, "Failed to initialize queue mutex\n");
+        std::fclose(fin);
+        std::fclose(fout);
+        return EXIT_FAILURE;
+    }
+    if (pthread_mutex_init(&in_mtx, nullptr) != 0)
+    {
+        std::fprintf(stderr, "Failed to initialize input mutex\n");
+        std::fclose(fin);
+        std::fclose(fout);
+        return EXIT_FAILURE;
+    }
+    if (pthread_mutex_init(&out_mtx, nullptr) != 0)
+    {
+        std::fprintf(stderr, "Failed to initialize output mutex\n");
+        std::fclose(fin);
+        std::fclose(fout);
+        return EXIT_FAILURE;
+    }
     // TODO(Subtask 3): Initialize condition variables here:
     //   pthread_cond_init(&not_full,  nullptr);
     //   pthread_cond_init(&not_empty, nullptr);
@@ -354,9 +385,9 @@ int main(int argc, char **argv)
     //   pthread_cond_destroy(&not_full);
     //   pthread_cond_destroy(&not_empty);
     // TODO(Subtask 2): Destroy mutexes:
-    //   pthread_mutex_destroy(&out_mtx);
-    //   pthread_mutex_destroy(&in_mtx);
-    //   pthread_mutex_destroy(&q_mtx);
+    pthread_mutex_destroy(&out_mtx);
+    pthread_mutex_destroy(&in_mtx);
+    pthread_mutex_destroy(&q_mtx);
 
     return global_err ? EXIT_FAILURE : EXIT_SUCCESS;
 }
