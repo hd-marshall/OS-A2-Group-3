@@ -55,21 +55,27 @@ make all
 
 Run Task 1 or Task 2 commands. Above in the Compilation and Usage section.
 
-## Work Log - 
+## Work Log -
 
-| Date | Student name | Task completed | Hours |
-|------|--------------|----------------|-------|
-| Sept 1, 2025 | Dewan shoaib anis | Initial project setup, Task 1 planning | 2 |
-| Sept 2, 2025 | Dewan shoaib anis | mmcopier.cpp implementation, threading logic | 4 |
-| Sept 3, 2025 | Dewan shoaib anis | Task 2 setup, shared queue design | 3 |
-| Sept 4, 2025 | [Student Name 3] | mscopier.cpp reader threads implementation |  |
-| Sept 5, 2025 | [Student Name 2] | Writer threads, mutex locks implementation |  |
-| Sept 6, 2025 | [Student Name 4] | Condition variables, avoiding busy waiting |  |
-| Sept 8, 2025 | Dewan shoaib anis | Testing, debugging, README update | 1.5 |
-| Sept 8, 2025 | [Student Name 2] | Final testing, documentation, README update |  |
+| Date         | Student name      | Task completed                                                                                    | Hours |
+| ------------ | ----------------- | ------------------------------------------------------------------------------------------------- | ----- |
+| Aug 28, 2025 | Harry Marshall    | Create teams channel to communicate                                                               | 0.5   |
+| Sept 1, 2025 | Dewan shoaib anis | Initial project setup, Task 1 planning                                                            | 2     |
+| Sept 2, 2025 | Dewan shoaib anis | mmcopier.cpp implementation, threading logic                                                      | 4     |
+| Sept 3, 2025 | Dewan shoaib anis | Task 2 setup, shared queue design                                                                 | 3     |
+| Sept 3, 2025 | Dewan shoaib anis | Initial project setup, Task 1 planning                                                            | 2     |
+| Sept 3, 2025 | Harry Marshall    | Create Github repo and Assignment folder structure                                                | 0.5   |
+| Sept 3, 2025 | Harry Marshall    | Create Makefile for both files                                                                    | 0.5   |
+| Sept 4, 2025 | Harry Marshall    | Create Readme.md, test and validate how to use RMIT servers, create instructions on how to use it | 3     |
+| Sept 4, 2025 | [Student Name 3]  | mscopier.cpp reader threads implementation                                                        |       |
+| Sept 5, 2025 | Harry Marshall    | Writer threads, mutex locks implementation                                                        | 4     |
+| Sept 6, 2025 | [Student Name 4]  | Condition variables, avoiding busy waiting                                                        |       |
+| Sept 8, 2025 | Dewan shoaib anis | Testing, debugging, README update                                                                 | 1.5   |
+| Sept 8, 2025 | [Student Name 2]  | Final testing, documentation, README update                                                       |       |
 
 **Total Hours:**
+
+- Harry Marshall: 8.5 hours
+- Ahrar Hossain: Z hours
+- Faiz Qasim: W hours
 - Dewan shoaib anis: 11 hours
-- [Student Name 2]: Y hours
-- [Student Name 3]: Z hours
-- [Student Name 4]: W hours
