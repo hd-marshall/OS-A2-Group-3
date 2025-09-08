@@ -29,8 +29,8 @@ void *cp_file (void* args){
     char src_path[2048];
     char dest_path[2048];
     
-    sprintf(src_path,"%s/source%d.txt", data-> src_name,data-> thread_id);
-    sprintf(dest_path,"%s/source%d.txt", data-> dest_name,data-> thread_id);
+    snprintf(src_path,sizeof(src_path),"%s/source%d.txt", data-> src_name,data-> thread_id);
+    snprintf(dest_path,sizeof(dest_path),"%s/source%d.txt", data-> dest_name,data-> thread_id);
 
 
 
