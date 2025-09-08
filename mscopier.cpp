@@ -21,8 +21,8 @@ struct Line {
 
 
 static std::map<size_t, Line> queue;  // sequence -> Line
-static size_t next_seq_to_read = 0;   // next sequence to assign
-static size_t next_seq_to_write = 0;  // next sequence to write
+static size_t read_next_seq = 0;   // next sequence to assign
+static size_t write_next_seq = 0;  // next sequence to write
 
 pthread_mutex_t q_mtx;
 pthread_mutex_t in_mtx;
@@ -106,7 +106,7 @@ void *reader_main(void *vp) {
             break;
         }
         memcpy(l.buf, line, l.len);
-        l.seq = next_seq_to_read++;
+        l.seq = read_next_seq++;
 
         queue[l.seq] = l;
 
@@ -123,13 +123,13 @@ void *writer_main(void *vp) {
         pthread_mutex_lock(&q_mtx);
 
         // Wait until the next required line is available
-        while ((queue.count(next_seq_to_write) == 0) && !done_reading && !global_err)
+        while ((queue.count(write_next_seq) == 0) && !done_reading && !global_err)
             pthread_cond_wait(&not_empty, &q_mtx);
 
-        if (queue.count(next_seq_to_write)) {
-            Line l = queue[next_seq_to_write];
-            queue.erase(next_seq_to_write);
-            next_seq_to_write++;
+        if (queue.count(write_next_seq)) {
+            Line l = queue[write_next_seq];
+            queue.erase(write_next_seq);
+            write_next_seq++;
 
             pthread_cond_signal(&not_full); // wake a reader
             pthread_mutex_unlock(&q_mtx);
