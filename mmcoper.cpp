@@ -26,11 +26,7 @@ void *cp_file (void* args){
     thread_dt_t * data =  (thread_dt_t*) args;
 
 
-    // int s_len = strlen(data->src_name);
-    // int d_len = strlen(data-> dest_name);
 
-    // char * source_path =  malloc(s_len +60);
-    // char* destination_path  = malloc(d_len +60);
     char src_path[2048];
     char dest_path[2048];
     
@@ -43,8 +39,6 @@ void *cp_file (void* args){
     if (!src_file ){
         printf("thread%d is not upto its task hence error", data-> thread_id);
        
-        // free(source_path);
-        // free(destination_path);
         return NULL;
 
     }
@@ -60,11 +54,6 @@ void *cp_file (void* args){
     }
 
 
-    // int src_file = open(source_path,O_RDONLY);
-    // if (src_file < 0){
-    //     printf("thread%d is not upto its task hence error", data-> thread_id);
-
-    // }
 
     // int des_file  = open(destination_path, O_CREAT|O_WRONLY|O_TRUNC, S_IRWXU);
     // if(des_file < 0){
@@ -93,13 +82,6 @@ void *cp_file (void* args){
 
 
 }
-// int dis_file(char * source_dir,char** files,int max){
-//     DIR * dir = opendir(source_dir);
-//     if (!dir){
-//         fprintf(stderr,"canot open");
-//         return 1;
-//     }
-// }
 
 
 
@@ -146,16 +128,12 @@ int main(int argc, char * argv[]){
     for(int i = 0; i < n; i++){
         thread_info[i].thread_id = i+ 1;
 
-        // thread_info[i].src_name =  malloc(strlen(argv[2]) +1);
-        // thread_info[i].dest_name = malloc(strlen(argv[3]) +1);
         thread_info[i].src_name =  argv[2];
         thread_info[i].dest_name = argv[3];
 
         // strcpy(thread_info[i].src_name,argv[2]);
         // strcpy(thread_info[i].dest_name,argv[3]);
 
-
-        // pthread_create(&threads[i],NULL,cp_file,&thread_info[i]);
         if (pthread_create(&threads[i], NULL, cp_file, &thread_info[i]) != 0) {
             fprintf(stderr, "Error: Failed to create thread %d\n", i + 1);
             return 1;
