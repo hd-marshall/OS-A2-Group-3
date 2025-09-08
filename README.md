@@ -56,6 +56,7 @@ make all
 Run Task 1 or Task 2 commands. Above in the Compilation and Usage section.
 
 # Locks used
+
 All locks are used in the file mscopier.cpp
 
 1. pthread_mutex_t q_mtx:
@@ -73,7 +74,7 @@ To avoid race conditions between multiple readers and writers accessing/modifyin
 
 2. pthread_mutex_t in_mtx;
 
-Used to serialize access to the input file (fin) 
+Used to serialize access to the input file (fin)
 Location in code:
 reader_main():
 pthread_mutex_lock(&in_mtx); before getline(...) **line 78**
@@ -91,6 +92,7 @@ Lock before fwrite(...) **line 137**
 To ensure that writers don’t write simultaneously and corrupt output.
 
 # Condition Variables: Waiting for/Signaling Conditions
+
 All condition variables are used in the file mscopier.cpp
 
 1. pthread_cond_t not_full;
@@ -107,7 +109,7 @@ If the queue has 20 lines (the QCAP), readers wait until a writer removes one.
 A writer signals not_full when it removes a line, letting a reader continue.
 
 2. pthread_cond_t not_empty;
-Used by writers to wait when the queue is empty or the needed line is not yet ready
+   Used by writers to wait when the queue is empty or the needed line is not yet ready
 
 Location in code:
 writer_main():
@@ -120,21 +122,27 @@ reader_main():
 A writer waits until the next expected sequence (write_next_seq) is available.
 A reader signals or broadcasts not_empty after adding a new line, waking up waiting writers.
 
-## Work Log - 
+## Work Log -
 
-| Date | Student name | Task completed | Hours |
-|------|--------------|----------------|-------|
-| Sept 1, 2025 | Dewan shoaib anis | Initial project setup, Task 1 planning | 2 |
-| Sept 2, 2025 | Dewan shoaib anis | mmcopier.cpp implementation, threading logic | 4 |
-| Sept 3, 2025 | Dewan shoaib anis | Task 2 setup, shared queue design | 3 |
-| Sept 4, 2025 | [Student Name 3] | mscopier.cpp reader threads implementation |  |
-| Sept 5, 2025 | [Student Name 2] | Writer threads, mutex locks implementation |  |
-| Sept 6, 2025 | Faiz Mohammed Qasim | Condition variables, avoiding busy waiting | 5 |
-| Sept 8, 2025 | Dewan shoaib anis | Testing, debugging, README update | 1.5 |
-| Sept 8, 2025 | Faiz Mohammed Qasim | Final testing, documentation, README update | 2 |
+| Date         | Student name        | Task completed                                                                                    | Hours |
+| ------------ | ------------------- | ------------------------------------------------------------------------------------------------- | ----- |
+| Aug 28, 2025 | Harry Marshall      | Create teams channel to communicate                                                               | 0.5   |
+| Sept 1, 2025 | Dewan shoaib anis   | Initial project setup, Task 1 planning                                                            | 2     |
+| Sept 2, 2025 | Dewan shoaib anis   | mmcopier.cpp implementation, threading logic                                                      | 4     |
+| Sept 3, 2025 | Dewan shoaib anis   | Task 2 setup, shared queue design                                                                 | 3     |
+| Sept 3, 2025 | Harry Marshall      | Create Github repo and Assignment folder structure                                                | 0.5   |
+| Sept 3, 2025 | Harry Marshall      | Create Makefile for both files                                                                    | 0.5   |
+| Sept 4, 2025 | Ahrar Hossain       | mscopier.cpp reader threads implementation                                                        | 3     |
+| Sept 4, 2025 | Harry Marshall      | Create Readme.md, test and validate how to use RMIT servers, create instructions on how to use it | 3     |
+| Sept 5, 2025 | Harry Marshall      | Writer threads, mutex locks implementation                                                        | 4     |
+| Sept 6, 2025 | Faiz Mohammed Qasim | Condition variables, avoiding busy waiting                                                        | 5     |
+| Sept 6, 2025 | Ahrar Hossain       | Condition variables, avoiding busy waiting with Faiz                                              | 5     |
+| Sept 8, 2025 | Dewan shoaib anis   | Testing, debugging, README update                                                                 | 1.5   |
+| Sept 8, 2025 | Faiz Mohammed Qasim | Final testing, documentation, README update                                                       | 2     |
 
 **Total Hours:**
+
 - Dewan shoaib anis: 11 hours
 - Faiz Mohammed Qasim: 7 hours
-- [Student Name 3]: Z hours
-- [Student Name 4]: W hours
+- Harry Marshall: 8.5 hours
+- Ahrar Hossain: 9 hours
